@@ -15,7 +15,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    max-width: 400px;
+    max-width: 500px;
     width: 100%;
   }
   
@@ -50,6 +50,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    margin-top: 10px;
   }
   
   button:hover {
@@ -58,6 +59,25 @@ body {
   
   .result {
     margin-top: 20px;
-    font-size: 18px;
+    font-size: 16px;
     color: #333;
   }
+  
+  nav {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+  }
+  
+  nav button {
+    background-color: #ddd;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  nav button:hover {
+    background-color: #ccc;
+  }
+  

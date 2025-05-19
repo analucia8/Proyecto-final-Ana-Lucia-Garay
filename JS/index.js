@@ -1,11 +1,11 @@
-// Objetos para representar las monedas
 const currencies = [
     { code: "USD", name: "Dólar Estadounidense" },
     { code: "EUR", name: "Euro" },
     { code: "UYU", name: "Peso Uruguayo" }
   ];
   
-  // Función para cargar las tasas de cambio de forma asíncrona
+  const conversionHistory = [];
+  
   async function fetchExchangeRates() {
     try {
       const response = await fetch('data.json');
@@ -23,8 +23,8 @@ const currencies = [
   
   function generateForm() {
     const converterDiv = document.getElementById('currency-converter');
-    
-    const currencyOptions = currencies.map(currency => 
+  
+    const currencyOptions = currencies.map(currency =>
       `<option value="${currency.code}">${currency.name}</option>`
     ).join('');
   
@@ -45,14 +45,12 @@ const currencies = [
     `;
   }
   
-  // Función para realizar la conversión de monedas
   async function convertCurrency() {
     const amountInput = document.getElementById('amount');
     const fromCurrency = document.getElementById('fromCurrency').value;
     const toCurrency = document.getElementById('toCurrency').value;
     const resultDiv = document.getElementById('result');
   
-    // Validar entrada
     const amount = parseFloat(amountInput.value);
     if (isNaN(amount) || amount <= 0) {
       Toastify({
@@ -81,14 +79,11 @@ const currencies = [
     } else if (toCurrency === exchangeData.base) {
       convertedAmount = amount / exchangeData.rates[fromCurrency];
     } else {
-      // Convertir primero a la moneda base (USD) y luego a la moneda objetivo
       const amountInBase = amount / exchangeData.rates[fromCurrency];
       convertedAmount = amountInBase * exchangeData.rates[toCurrency];
     }
   
-    // Redondear a 2 decimales
     convertedAmount = convertedAmount.toFixed(2);
-  
     resultDiv.innerHTML = `${amount} ${fromCurrency} = ${convertedAmount} ${toCurrency}`;
   
     Swal.fire({
@@ -103,8 +98,52 @@ const currencies = [
       duration: 3000,
       style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
     }).showToast();
+  
+    conversionHistory.push({
+      from: fromCurrency,
+      to: toCurrency,
+      amount,
+      result: convertedAmount,
+      date: new Date().toLocaleString()
+    });
+    localStorage.setItem('conversionHistory', JSON.stringify(conversionHistory));
+    updateHistory();
+  }
+  
+  function updateHistory() {
+    const historyDiv = document.getElementById('history');
+    historyDiv.innerHTML = '<h3>Historial de conversiones</h3>';
+    conversionHistory.slice().reverse().forEach(entry => {
+      const item = document.createElement('p');
+      item.textContent = `${entry.date}: ${entry.amount} ${entry.from} → ${entry.result} ${entry.to}`;
+      historyDiv.appendChild(item);
+    });
+  }
+  
+  function clearHistory() {
+    conversionHistory.length = 0;
+    localStorage.removeItem('conversionHistory');
+    updateHistory();
+    Toastify({
+      text: "Historial eliminado",
+      duration: 3000,
+      style: { background: "linear-gradient(to right, #ff416c, #ff4b2b)" }
+    }).showToast();
+  }
+  
+  function showSection(section) {
+    document.getElementById('cotizador-section').style.display = (section === 'cotizador') ? 'block' : 'none';
+    document.getElementById('quienes-section').style.display = (section === 'quienes') ? 'block' : 'none';
+    document.getElementById('uso-section').style.display = (section === 'uso') ? 'block' : 'none';
   }
   
   document.addEventListener('DOMContentLoaded', () => {
     generateForm();
+    const savedHistory = localStorage.getItem('conversionHistory');
+    if (savedHistory) {
+      const parsed = JSON.parse(savedHistory);
+      parsed.forEach(entry => conversionHistory.push(entry));
+      updateHistory();
+    }
   });
+  

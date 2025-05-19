@@ -12,8 +12,28 @@
 <body>
   <div class="container">
     <h1>Cotizador de Monedas</h1>
-    <div id="currency-converter"></div>
-    <div id="result" class="result"></div>
+    <nav>
+      <button onclick="showSection('cotizador')">Cotizador</button>
+      <button onclick="showSection('quienes')">Quiénes somos</button>
+      <button onclick="showSection('uso')">Cómo usar</button>
+    </nav>
+
+    <section id="cotizador-section">
+      <div id="currency-converter"></div>
+      <div id="result" class="result"></div>
+      <div id="history" class="result"></div>
+      <button onclick="clearHistory()">Limpiar historial</button>
+    </section>
+
+    <section id="quienes-section" style="display: none;">
+      <h2>Quiénes somos</h2>
+      <p>Somos una aplicación de cotización de monedas desarrollada con fines educativos.</p>
+    </section>
+
+    <section id="uso-section" style="display: none;">
+      <h2>Cómo usar el cotizador</h2>
+      <p>Ingrese una cantidad, seleccione las monedas de origen y destino y presione "Cotizar".</p>
+    </section>
   </div>
   <script src="JS/index.js"></script>
 </body>
